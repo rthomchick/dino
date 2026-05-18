@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Grep",
+      "Glob",
+      "LS",
+      "Bash(python*)",
+      "Bash(pip*)",
+      "Bash(uvicorn*)",
+      "Bash(curl*)",
+      "Bash(httpie*)",
+      "Bash(pytest*)",
+      "Bash(git*)",
+      "Write"
+    ]
+  }
+}
