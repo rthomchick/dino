@@ -31,11 +31,11 @@ class BookingConfirmation(BaseModel):
 
 
 class CalendarEvent(BaseModel):
-    restaurant: str
-    date: str
-    time: str
-    party_size: int
-    address: str
+    title: str
+    calendar_url: str
+    start: str
+    location: str
+    status: str = "link_generated"
 
 
 class ChatResponse(BaseModel):

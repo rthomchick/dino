@@ -1,7 +1,9 @@
 import json
 import re
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
+from urllib.parse import urlencode
 import anthropic
 from pydantic import BaseModel
 
@@ -52,6 +54,43 @@ def _enrich_with_curated(restaurants: list, curated: dict) -> list[dict]:
     return enriched
 
 
+def _build_calendar_link(
+    restaurant_name: str,
+    location: str,
+    address: str,
+    date: str,
+    time: str,
+    party_size: int,
+    confirmation_number: str,
+    insider_tip: str = "",
+) -> dict:
+    start_dt = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M")
+    end_dt = start_dt + timedelta(hours=2)
+    fmt = "%Y%m%dT%H%M%S"
+    description_parts = [
+        f"Party of {party_size}",
+        f"Confirmation: {confirmation_number}",
+    ]
+    if insider_tip:
+        description_parts.append(f"\nDino's insider tip: {insider_tip}")
+    description_parts.append("\nBooked via Dino — your Vegas dining concierge")
+    full_location = f"{restaurant_name}, {address}" if address else f"{restaurant_name}, {location}"
+    params = {
+        "action": "TEMPLATE",
+        "text": f"Dinner at {restaurant_name}",
+        "dates": f"{start_dt.strftime(fmt)}/{end_dt.strftime(fmt)}",
+        "location": full_location,
+        "details": "\n".join(description_parts),
+    }
+    return {
+        "calendar_url": f"https://calendar.google.com/calendar/render?{urlencode(params)}",
+        "title": f"Dinner at {restaurant_name}",
+        "start": f"{date}T{time}",
+        "location": full_location,
+        "status": "link_generated",
+    }
+
+
 def _parse_structured_blocks(text: str) -> tuple[str, list[dict], Optional[dict], Optional[dict]]:
     """Extract [RESTAURANT_CARD], [BOOKING_CONFIRMED], [CALENDAR_ADDED] blocks from text."""
     restaurant_cards = []
@@ -79,7 +118,7 @@ def _parse_structured_blocks(text: str) -> tuple[str, list[dict], Optional[dict]
     if bookings:
         booking_confirmation = bookings[0]
 
-    calendars, text = extract("CALENDAR_ADDED", text)
+    calendars, text = extract("CALENDAR_EVENT", text)
     if calendars:
         calendar_event = calendars[0]
 
@@ -129,18 +168,16 @@ async def _execute_tool(tool_name: str, tool_input: dict) -> str:
         return json.dumps(result.model_dump())
 
     elif tool_name == "add_to_calendar":
-        # Mock calendar integration — real Google Calendar wired in Day 3-4
-        event = {
-            "status": "added",
-            "title": f"Dinner at {tool_input['restaurant_name']}",
-            "date": tool_input["date"],
-            "time": tool_input["time"],
-            "party_size": tool_input["party_size"],
-            "address": tool_input["address"],
-            "confirmation_number": tool_input["confirmation_number"],
-            "calendar_event_id": f"mock-event-{tool_input['confirmation_number']}",
-        }
-        return json.dumps(event)
+        return json.dumps(_build_calendar_link(
+            restaurant_name=tool_input["restaurant_name"],
+            location=tool_input.get("location", "Las Vegas, NV"),
+            address=tool_input.get("address", ""),
+            date=tool_input["date"],
+            time=tool_input["time"],
+            party_size=tool_input["party_size"],
+            confirmation_number=tool_input["confirmation_number"],
+            insider_tip=tool_input.get("insider_tip", ""),
+        ))
 
     elif tool_name == "get_booking_link":
         url = booking.get_booking_link(tool_input["venue_id"])

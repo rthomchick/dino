@@ -127,8 +127,9 @@ TOOLS: list[dict] = [
     {
         "name": "add_to_calendar",
         "description": (
-            "Add the confirmed reservation to the user's Google Calendar. "
-            "Call this immediately after every successful create_reservation — don't ask, just do it."
+            "Generate a Google Calendar link for a confirmed reservation. "
+            "Call this immediately after every successful create_reservation — don't ask, just do it. "
+            "Include Dino's insider tip in the event details."
         ),
         "input_schema": {
             "type": "object",
@@ -136,6 +137,14 @@ TOOLS: list[dict] = [
                 "restaurant_name": {
                     "type": "string",
                     "description": "Full restaurant name for the calendar event title.",
+                },
+                "location": {
+                    "type": "string",
+                    "description": "City or area (e.g. 'Las Vegas Strip'). Used as fallback if no address.",
+                },
+                "address": {
+                    "type": "string",
+                    "description": "Restaurant street address for the calendar event location.",
                 },
                 "date": {
                     "type": "string",
@@ -149,16 +158,16 @@ TOOLS: list[dict] = [
                     "type": "integer",
                     "description": "Number of guests.",
                 },
-                "address": {
-                    "type": "string",
-                    "description": "Restaurant address for the calendar event location.",
-                },
                 "confirmation_number": {
                     "type": "string",
                     "description": "Confirmation number from the reservation, included in calendar notes.",
                 },
+                "insider_tip": {
+                    "type": "string",
+                    "description": "Dino's insider recommendation for this restaurant — what to order, where to sit, when to arrive, etc.",
+                },
             },
-            "required": ["restaurant_name", "date", "time", "party_size", "address", "confirmation_number"],
+            "required": ["restaurant_name", "date", "time", "party_size", "confirmation_number"],
         },
     },
     {
