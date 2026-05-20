@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Dino — Vegas Dining Concierge</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #0D0D1A;
+      --gold:         #D4AF37;
+      --gold-dim:     rgba(212,175,55,0.25);
+      --gold-faint:   rgba(212,175,55,0.08);
+      --gold-focus:   rgba(212,175,55,0.4);
+      --text-light:   #F5E6C8;
+      --text-body:    #C8C8D8;
+      --text-muted:   #8B8FA3;
+      --text-dim:     #6B6F83;
+      --user-bubble:  #2A2A4A;
+      --dino-bubble:  rgba(255,255,255,0.04);
+      --card-bg:      #1A1A2E;
+      --card-border:  rgba(212,175,55,0.25);
+      --success:      #4ADE80;
+      --calendar:     #93A3F8;
+      --border-faint: rgba(212,175,55,0.15);
+    }
+
+    html, body {
+      height: 100%;
+      background: #0A0A14;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Instrument Sans', system-ui, -apple-system, sans-serif;
+    }
+
+    #app {
+      width: 100%;
+      max-width: 420px;
+      height: 100vh;
+      height: 100dvh;
+      background: var(--bg);
+      border: 1px solid var(--border-faint);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ── Header ─────────────────────────────────────────────── */
+    #header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-faint);
+    }
+
+    .avatar-lg {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: #0D0D1A;
+      flex-shrink: 0;
+    }
+
+    .header-text { flex: 1; }
+
+    .header-name {
+      color: var(--text-light);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .header-sub {
+      color: var(--text-dim);
+      font-size: 12px;
+      margin-top: 1px;
+    }
+
+    /* ── Messages ────────────────────────────────────────────── */
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scroll-behavior: smooth;
+    }
+
+    #messages::-webkit-scrollbar { width: 4px; }
+    #messages::-webkit-scrollbar-track { background: transparent; }
+    #messages::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.2); border-radius: 2px; }
+
+    /* ── Welcome state ───────────────────────────────────────── */
+    #welcome {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      text-align: center;
+      padding: 24px 8px;
+      gap: 12px;
+    }
+
+    .welcome-emoji { font-size: 32px; line-height: 1; }
+
+    .welcome-title {
+      color: var(--gold);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .welcome-sub {
+      color: var(--text-dim);
+      font-size: 13px;
+      line-height: 1.5;
+      max-width: 280px;
+    }
+
+    #suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 8px;
+    }
+
+    .pill {
+      background: var(--gold-faint);
+      border: 1px solid rgba(212,175,55,0.2);
+      color: var(--gold);
+      font-size: 12px;
+      padding: 8px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.15s;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+    }
+
+    .pill:hover { background: rgba(212,175,55,0.15); }
+    .pill:active { background: rgba(212,175,55,0.22); }
+    .pill.disabled { opacity: 0.4; pointer-events: none; }
+
+    /* ── Message rows ────────────────────────────────────────── */
+    .msg-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+
+    .msg-row.user { flex-direction: row-reverse; }
+
+    .avatar-sm {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #0D0D1A;
+      flex-shrink: 0;
+      margin-bottom: 2px;
+    }
+
+    .msg-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 82%;
+    }
+
+    .msg-row.user .msg-col { align-items: flex-end; }
+
+    .bubble {
+      padding: 10px 14px;
+      font-size: 14px;
+      line-height: 1.5;
+      word-wrap: break-word;
+    }
+
+    .bubble.dino {
+      background: var(--dino-bubble);
+      color: var(--text-body);
+      border-radius: 16px 16px 16px 4px;
+    }
+
+    .bubble.user {
+      background: var(--user-bubble);
+      color: var(--text-light);
+      border-radius: 16px 16px 4px 16px;
+    }
+
+    .bubble.loading {
+      background: var(--dino-bubble);
+      color: var(--text-dim);
+      font-style: italic;
+      border-radius: 16px 16px 16px 4px;
+    }
+
+    /* ── Restaurant card ─────────────────────────────────────── */
+    .restaurant-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .card-photo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-photo-placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #1A1A2E, #2A2A4A);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-photo-placeholder-icon {
+      font-size: 28px;
+      opacity: 0.4;
+    }
+
+    .photo-wrap {
+      position: relative;
+      height: 120px;
+      overflow: hidden;
+    }
+
+    .price-badge {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.7);
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 7px;
+      border-radius: 6px;
+    }
+
+    .card-body { padding: 12px 14px; }
+
+    .card-name-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-name {
+      color: var(--text-light);
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .card-rating {
+      color: var(--gold);
+      font-size: 13px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .card-details {
+      color: var(--text-muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .card-vibe {
+      color: #9B9FB3;
+      font-size: 12px;
+      font-style: italic;
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+
+    .card-footer {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge-not-bookable {
+      background: rgba(212,175,55,0.08);
+      border: 1px solid rgba(212,175,55,0.25);
+      color: var(--gold);
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 10px;
+    }
+
+    .btn-book-direct {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .btn-book-direct:hover { background: rgba(212,175,55,0.12); }
+
+    /* ── Booking confirmation card ───────────────────────────── */
+    .booking-card {
+      background: linear-gradient(135deg, #1a2a1a 0%, #1a1a2e 100%);
+      border: 1px solid rgba(74,222,128,0.3);
+      border-radius: 12px;
+      padding: 16px;
+      width: 100%;
+    }
+
+    .booking-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--success);
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .booking-restaurant {
+      color: var(--text-light);
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .booking-location {
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    .booking-divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      margin: 12px 0;
+    }
+
+    .booking-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 16px;
+    }
+
+    .booking-field-label {
+      color: var(--text-dim);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    .booking-field-value {
+      color: var(--text-light);
+      font-size: 13px;
+    }
+
+    .booking-confirmation-num {
+      color: var(--gold);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+    }
+
+    /* ── Calendar event card ─────────────────────────────────── */
+    .calendar-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(99,144,255,0.25);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .calendar-icon { font-size: 20px; flex-shrink: 0; }
+
+    .calendar-title {
+      color: var(--calendar);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .calendar-sub {
+      color: var(--text-dim);
+      font-size: 12px;
+      margin-top: 1px;
+    }
+
+    /* ── Input area ──────────────────────────────────────────── */
+    #input-area {
+      flex-shrink: 0;
+      border-top: 1px solid var(--border-faint);
+      background: var(--bg);
+      padding: 12px 16px 8px;
+    }
+
+    .input-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 8px 10px 8px 14px;
+      transition: border-color 0.15s;
+    }
+
+    .input-row:focus-within {
+      border-color: var(--gold-focus);
+    }
+
+    #msg-input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text-light);
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1.5;
+      resize: none;
+      min-height: 24px;
+      max-height: 96px;
+      overflow-y: auto;
+      padding: 0;
+    }
+
+    #msg-input::placeholder { color: var(--text-dim); }
+
+    #send-btn {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, opacity 0.15s;
+      background: var(--gold);
+    }
+
+    #send-btn:disabled {
+      background: rgba(255,255,255,0.06);
+      cursor: default;
+    }
+
+    #send-btn svg { display: block; }
+
+    #send-btn:not(:disabled) svg path { fill: #0D0D1A; }
+    #send-btn:disabled svg path { fill: var(--text-dim); }
+
+    .footer-text {
+      color: #3A3A4A;
+      font-size: 11px;
+      text-align: center;
+      margin-top: 8px;
+      padding-bottom: 2px;
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <!-- Header -->
+  <div id="header">
+    <div class="avatar-lg">D</div>
+    <div class="header-text">
+      <div class="header-name">Dino</div>
+      <div class="header-sub">Vegas dining concierge</div>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div id="messages">
+    <div id="welcome">
+      <div class="welcome-emoji">🎲</div>
+      <div class="welcome-title">Evening, pal.</div>
+      <div class="welcome-sub">Tell me what you're in the mood for and I'll find you the right table — I know every room worth sitting in on the Strip.</div>
+      <div id="suggestions">
+        <button class="pill" onclick="sendSuggestion(this)">Anniversary dinner for two</button>
+        <button class="pill" onclick="sendSuggestion(this)">Best steak in town</button>
+        <button class="pill" onclick="sendSuggestion(this)">Fun group dinner, 6 people</button>
+        <button class="pill" onclick="sendSuggestion(this)">Something near the Bellagio</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input -->
+  <div id="input-area">
+    <div class="input-row">
+      <textarea
+        id="msg-input"
+        rows="1"
+        placeholder="Tell Dino what you're in the mood for..."
+        autocomplete="off"
+        autocorrect="on"
+        spellcheck="true"
+      ></textarea>
+      <button id="send-btn" disabled title="Send">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M14.5 8L2 14.5L4.5 8L2 1.5L14.5 8Z" fill="#6B6F83"/>
+        </svg>
+      </button>
+    </div>
+    <div class="footer-text">Dino · AI dining concierge · v0.1</div>
+  </div>
+</div>
+
+<script>
+  const API_BASE = "";
+  const LOADING_PHRASES = [
+    "Checking with the maître d'...",
+    "Calling in a favor...",
+    "Flipping through the little black book...",
+    "Asking around the lounge...",
+  ];
+
+  let conversationId = null;
+  let isLoading = false;
+  let userScrolledUp = false;
+  let loadingInterval = null;
+  let loadingMsgEl = null;
+  let loadingPhraseIndex = 0;
+
+  const messagesEl = document.getElementById("messages");
+  const welcomeEl  = document.getElementById("welcome");
+  const inputEl    = document.getElementById("msg-input");
+  const sendBtn    = document.getElementById("send-btn");
+
+  // ── UUID ──────────────────────────────────────────────────────
+  function uuid4() {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
+  }
+
+  // ── Price level → $ signs ─────────────────────────────────────
+  function priceStr(level) {
+    if (!level) return null;
+    return "$".repeat(Math.min(Math.max(parseInt(level), 1), 4));
+  }
+
+  // ── Scroll ────────────────────────────────────────────────────
+  messagesEl.addEventListener("scroll", () => {
+    const atBottom = messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight < 60;
+    userScrolledUp = !atBottom;
+  });
+
+  function scrollToBottom(force = false) {
+    if (!userScrolledUp || force) {
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+  }
+
+  // ── Input auto-grow ───────────────────────────────────────────
+  inputEl.addEventListener("input", () => {
+    inputEl.style.height = "auto";
+    inputEl.style.height = Math.min(inputEl.scrollHeight, 96) + "px";
+    sendBtn.disabled = !inputEl.value.trim() || isLoading;
+  });
+
+  inputEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      if (!sendBtn.disabled) handleSend();
+    }
+  });
+
+  sendBtn.addEventListener("click", handleSend);
+
+  // ── Suggestion pills ──────────────────────────────────────────
+  function sendSuggestion(el) {
+    if (isLoading) return;
+    inputEl.value = el.textContent;
+    handleSend();
+  }
+
+  // ── Append helpers ────────────────────────────────────────────
+  function appendUserBubble(text) {
+    const row = document.createElement("div");
+    row.className = "msg-row user";
+    row.innerHTML = `<div class="msg-col"><div class="bubble user">${escapeHtml(text)}</div></div>`;
+    messagesEl.appendChild(row);
+    scrollToBottom(true);
+    return row;
+  }
+
+  function appendDinoRow() {
+    const row = document.createElement("div");
+    row.className = "msg-row";
+    row.innerHTML = `<div class="avatar-sm">D</div><div class="msg-col"></div>`;
+    messagesEl.appendChild(row);
+    return row.querySelector(".msg-col");
+  }
+
+  function appendBubble(col, text, cls = "dino") {
+    const el = document.createElement("div");
+    el.className = `bubble ${cls}`;
+    el.innerHTML = formatText(text);
+    col.appendChild(el);
+    scrollToBottom();
+    return el;
+  }
+
+  // ── Loading indicator ─────────────────────────────────────────
+  function startLoading() {
+    const col = appendDinoRow();
+    loadingMsgEl = document.createElement("div");
+    loadingMsgEl.className = "bubble loading";
+    loadingMsgEl.textContent = LOADING_PHRASES[0];
+    loadingPhraseIndex = 0;
+    col.appendChild(loadingMsgEl);
+    scrollToBottom(true);
+
+    loadingInterval = setInterval(() => {
+      loadingPhraseIndex = (loadingPhraseIndex + 1) % LOADING_PHRASES.length;
+      if (loadingMsgEl) loadingMsgEl.textContent = LOADING_PHRASES[loadingPhraseIndex];
+    }, 2500);
+  }
+
+  function stopLoading() {
+    clearInterval(loadingInterval);
+    if (loadingMsgEl) {
+      loadingMsgEl.closest(".msg-row")?.remove();
+      loadingMsgEl = null;
+    }
+  }
+
+  // ── Photo with fallback ───────────────────────────────────────
+  function photoElement(photoUrl) {
+    const placeholder = `<div class="card-photo-placeholder"><span class="card-photo-placeholder-icon">🍽️</span></div>`;
+    if (!photoUrl) return placeholder;
+    return placeholder + `<img class="card-photo" src="${escapeHtml(photoUrl)}" alt="" loading="lazy" onerror="this.style.display='none'">`;
+  }
+
+  // ── Rich cards ────────────────────────────────────────────────
+  function buildRestaurantCard(r) {
+    const price = priceStr(r.price_level);
+    const rating = r.rating ? `⭐ ${r.rating}` : "";
+    const details = [r.cuisine, r.location || r.hotel_casino].filter(Boolean).join(" · ");
+    const vibe = r.dino_take || "";
+    const isBookable = r.bookable !== false;
+
+    let footer = "";
+    if (!isBookable) {
+      if (r.booking_url) {
+        footer = `<div class="card-footer">
+          <a class="btn-book-direct" href="${escapeHtml(r.booking_url)}" target="_blank" rel="noopener">↗ Book direct</a>
+        </div>`;
+      } else {
+        footer = `<div class="card-footer"><span class="badge-not-bookable">Book direct only</span></div>`;
+      }
+    }
+
+    const el = document.createElement("div");
+    el.className = "restaurant-card";
+    el.innerHTML = `
+      <div class="photo-wrap">
+        ${photoElement(r.photo_url)}
+        ${price ? `<span class="price-badge">${price}</span>` : ""}
+      </div>
+      <div class="card-body">
+        <div class="card-name-row">
+          <span class="card-name">${escapeHtml(r.name)}</span>
+          ${rating ? `<span class="card-rating">${rating}</span>` : ""}
+        </div>
+        ${details ? `<div class="card-details">${escapeHtml(details)}</div>` : ""}
+        ${vibe ? `<div class="card-vibe">${escapeHtml(vibe)}</div>` : ""}
+        ${footer}
+      </div>
+    `;
+    return el;
+  }
+
+  function buildBookingCard(b) {
+    const el = document.createElement("div");
+    el.className = "booking-card";
+    const dateStr = b.date ? formatDate(b.date) : "—";
+    const timeStr = b.time ? formatTime(b.time) : "—";
+    el.innerHTML = `
+      <div class="booking-header">✓ Reservation confirmed</div>
+      <div class="booking-restaurant">${escapeHtml(b.restaurant || "")}</div>
+      ${b.location ? `<div class="booking-location">${escapeHtml(b.location)}</div>` : ""}
+      <hr class="booking-divider">
+      <div class="booking-grid">
+        <div>
+          <div class="booking-field-label">Date</div>
+          <div class="booking-field-value">${escapeHtml(dateStr)}</div>
+        </div>
+        <div>
+          <div class="booking-field-label">Time</div>
+          <div class="booking-field-value">${escapeHtml(timeStr)}</div>
+        </div>
+        <div>
+          <div class="booking-field-label">Party size</div>
+          <div class="booking-field-value">${b.party_size || "—"}</div>
+        </div>
+        <div>
+          <div class="booking-field-label">Confirmation</div>
+          <div class="booking-confirmation-num">${escapeHtml(b.confirmation_number || "—")}</div>
+        </div>
+      </div>
+    `;
+    return el;
+  }
+
+  function buildCalendarCard(c) {
+    const el = document.createElement("div");
+    el.className = "calendar-card";
+    el.innerHTML = `
+      <span class="calendar-icon">📅</span>
+      <div>
+        <div class="calendar-title">${escapeHtml(c.title || `Dinner at ${c.restaurant}`)}</div>
+        <div class="calendar-sub">Added to Google Calendar</div>
+      </div>
+    `;
+    return el;
+  }
+
+  // ── Format helpers ────────────────────────────────────────────
+  function escapeHtml(str) {
+    if (str == null) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function formatText(text) {
+    // Bold markdown **text** and line breaks only — keep it simple
+    return escapeHtml(text)
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\n/g, "<br>");
+  }
+
+  function formatDate(dateStr) {
+    try {
+      const [y, m, d] = dateStr.split("-").map(Number);
+      return new Date(y, m - 1, d).toLocaleDateString("en-US", {
+        weekday: "short", month: "short", day: "numeric", year: "numeric"
+      });
+    } catch { return dateStr; }
+  }
+
+  function formatTime(timeStr) {
+    try {
+      const [h, m] = timeStr.split(":").map(Number);
+      const d = new Date(); d.setHours(h, m);
+      return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+    } catch { return timeStr; }
+  }
+
+  // ── Render full Dino turn ─────────────────────────────────────
+  function renderDinoResponse(data) {
+    const col = appendDinoRow();
+
+    if (data.message) {
+      appendBubble(col, data.message);
+    }
+
+    // Restaurant cards
+    if (data.restaurant_cards && data.restaurant_cards.length > 0) {
+      data.restaurant_cards.forEach(r => {
+        col.appendChild(buildRestaurantCard(r));
+      });
+    }
+
+    // Booking confirmation
+    if (data.booking_confirmation) {
+      col.appendChild(buildBookingCard(data.booking_confirmation));
+    }
+
+    // Calendar event
+    if (data.calendar_event) {
+      col.appendChild(buildCalendarCard(data.calendar_event));
+    }
+
+    scrollToBottom(true);
+  }
+
+  // ── Error message ─────────────────────────────────────────────
+  function renderError(msg) {
+    const col = appendDinoRow();
+    const el = document.createElement("div");
+    el.className = "bubble dino";
+    el.style.borderLeft = "2px solid rgba(255,100,100,0.4)";
+    el.style.color = "#C8B8B8";
+    el.textContent = msg;
+    col.appendChild(el);
+    scrollToBottom(true);
+  }
+
+  // ── Main send flow ────────────────────────────────────────────
+  async function handleSend() {
+    const text = inputEl.value.trim();
+    if (!text || isLoading) return;
+
+    // Hide welcome
+    if (welcomeEl) welcomeEl.style.display = "none";
+
+    // Disable pills
+    document.querySelectorAll(".pill").forEach(p => p.classList.add("disabled"));
+
+    // Clear input
+    inputEl.value = "";
+    inputEl.style.height = "auto";
+    sendBtn.disabled = true;
+    isLoading = true;
+    userScrolledUp = false;
+
+    appendUserBubble(text);
+    startLoading();
+
+    // Generate conversation ID on first send
+    if (!conversationId) conversationId = uuid4();
+
+    let data = null;
+    let lastError = null;
+
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const res = await fetch(`${API_BASE}/chat`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: text, conversation_id: conversationId }),
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || `Server error ${res.status}`);
+        }
+
+        data = await res.json();
+        break;
+      } catch (e) {
+        lastError = e;
+        if (attempt === 0) await sleep(2000);
+      }
+    }
+
+    stopLoading();
+    isLoading = false;
+    sendBtn.disabled = !inputEl.value.trim();
+
+    if (data) {
+      // Update conversation ID from server if returned
+      if (data.conversation_id) conversationId = data.conversation_id;
+      renderDinoResponse(data);
+    } else {
+      renderError("Looks like the kitchen's backed up, pal. Give me a second and try again.");
+    }
+  }
+
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+</script>
+</body>
+</html>

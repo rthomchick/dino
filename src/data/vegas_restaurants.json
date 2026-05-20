@@ -1,0 +1,222 @@
+[
+  {
+    "venue_id": "carbone-aria",
+    "name": "Carbone",
+    "hotel_casino": "ARIA Resort & Casino",
+    "cuisine": "Italian-American",
+    "price_level": 4,
+    "google_place_id": "PLACEHOLDER_carbone_aria",
+    "booking_url": "https://resy.com/cities/las-vegas-nv/venues/carbone-las-vegas",
+    "dino_take": "The best red-sauce joint west of Mulberry Street — the rigatoni vodka alone is worth the trip. Get the veal parmesan, tip your captain, and don't be shy about the wine list.",
+    "bookable": true
+  },
+  {
+    "venue_id": "joel-robuchon-mgm",
+    "name": "Joël Robuchon",
+    "hotel_casino": "MGM Grand",
+    "cuisine": "French",
+    "price_level": 4,
+    "google_place_id": "PLACEHOLDER_joel_robuchon_mgm",
+    "booking_url": "https://www.mgmgrand.com/en/restaurants/joel-robuchon-restaurant.html",
+    "dino_take": "The most serious meal you can eat in this town — the man held more Michelin stars than anyone alive, and every plate shows it. Come hungry, come dressed, and set aside three hours.",
+    "bookable": true
+  },
+  {
+    "venue_id": "wakuda-venetian",
+    "name": "Wakuda",
+    "hotel_casino": "The Venetian",
+    "cuisine": "Japanese",
+    "price_level": 4,
+    "google_place_id": "PLACEHOLDER_wakuda_venetian",
+    "booking_url": "https://www.venetianlasvegas.com/restaurants/wakuda.html",
+    "dino_take": "Chef Tetsuya Wakuda brings Sydney's most famous dining room to Vegas, and the omakase here is stunning. The wagyu and uni pairings are something you'll still be talking about next week.",
+    "bookable": true
+  },
+  {
+    "venue_id": "bazaar-meat-sahara",
+    "name": "Bazaar Meat by José Andrés",
+    "hotel_casino": "SAHARA Las Vegas",
+    "cuisine": "Steakhouse / Spanish",
+    "price_level": 4,
+    "google_place_id": "PLACEHOLDER_bazaar_meat_sahara",
+    "booking_url": "https://www.sbe.com/restaurants/location/bazaar-meat-by-jose-andres/",
+    "dino_take": "José Andrés reinvented the Vegas steakhouse — cotton candy foie gras, whole-roasted suckling pig, and a Josper grill that makes every cut sing. Not your grandfather's chophouse, and thank God for that.",
+    "bookable": true
+  },
+  {
+    "venue_id": "stk-cosmopolitan",
+    "name": "STK Steakhouse",
+    "hotel_casino": "The Cosmopolitan of Las Vegas",
+    "cuisine": "Steakhouse",
+    "price_level": 3,
+    "google_place_id": "PLACEHOLDER_stk_cosmopolitan",
+    "booking_url": "https://togrp.com/restaurant/stk-steakhouse-las-vegas/",
+    "dino_take": "Loud, lively, and legitimately good beef — the scene doesn't overwhelm the steak here. The 28-day dry-aged cowboy ribeye is my move when I want a great cut without the cathedral formality.",
+    "bookable": true
+  },
+  {
+    "venue_id": "catch-aria",
+    "name": "Catch",
+    "hotel_casino": "ARIA Resort & Casino",
+    "cuisine": "Seafood / Asian Fusion",
+    "price_level": 3,
+    "google_place_id": "PLACEHOLDER_catch_aria",
+    "booking_url": "https://www.arialasvegas.com/restaurants/catch/",
+    "dino_take": "The yellowtail sashimi with jalapeño is one of the great bites in Vegas — full stop. Beautiful room, gorgeous crowd, and the rooftop terrace is unbeatable on a warm night.",
+    "bookable": true
+  },
+  {
+    "venue_id": "beauty-essex-palms",
+    "name": "Beauty & Essex",
+    "hotel_casino": "The Palms Casino Resort",
+    "cuisine": "American / Small Plates",
+    "price_level": 3,
+    "google_place_id": "PLACEHOLDER_beauty_essex_palms",
+    "booking_url": "https://www.thepalms.com/dining/beauty-essex/",
+    "dino_take": "Hidden behind a pawn shop facade — only in Vegas. The small plates are shareable and smart, the cocktails are theatrical, and the whole place has an energy that makes the night feel like something.",
+    "bookable": true
+  },
+  {
+    "venue_id": "tao-venetian",
+    "name": "Tao Asian Bistro",
+    "hotel_casino": "The Venetian",
+    "cuisine": "Asian",
+    "price_level": 3,
+    "google_place_id": "PLACEHOLDER_tao_venetian",
+    "booking_url": "https://taogroup.com/venues/tao-las-vegas/",
+    "dino_take": "The Bangkok shrimp is practically a Vegas institution at this point, and the sake-steamed sea bass is reliably excellent. Come for dinner, stay for the scene — it's one of those places that does both right.",
+    "bookable": true
+  },
+  {
+    "venue_id": "golden-steer-steakhouse",
+    "name": "Golden Steer Steakhouse",
+    "hotel_casino": "Off-Strip (W Sahara Ave)",
+    "cuisine": "Classic American Steakhouse",
+    "price_level": 3,
+    "google_place_id": "PLACEHOLDER_golden_steer",
+    "booking_url": "https://www.goldensteerlasvegas.com/reservations/",
+    "dino_take": "This is where Sinatra and the boys ate when they wanted to get away from the tourists — opened in 1958, still serving from the same booths. The porterhouse is the real deal and the history is included free.",
+    "bookable": true
+  },
+  {
+    "venue_id": "hugos-cellar-four-queens",
+    "name": "Hugo's Cellar",
+    "hotel_casino": "Four Queens Hotel & Casino",
+    "cuisine": "Classic Continental",
+    "price_level": 3,
+    "google_place_id": "PLACEHOLDER_hugos_cellar",
+    "booking_url": "https://www.fourqueens.com/hugos-cellar/",
+    "dino_take": "Every lady gets a rose at the door and the tableside salad is pure old-school Vegas romance. If you're taking someone special and want them to feel like it's 1972 in the best possible way, this is the room.",
+    "bookable": true
+  },
+  {
+    "venue_id": "hells-kitchen-caesars",
+    "name": "Hell's Kitchen",
+    "hotel_casino": "Caesars Palace",
+    "cuisine": "Modern British / European",
+    "price_level": 3,
+    "google_place_id": "PLACEHOLDER_hells_kitchen_caesars",
+    "booking_url": "https://www.hellskitchenlv.com/",
+    "dino_take": "Gordon Ramsay's signature spot actually delivers the goods — the beef Wellington is as good as advertised and they nail the theatrical service without being corny about it. Solid pick for groups.",
+    "bookable": true
+  },
+  {
+    "venue_id": "guy-fieris-vegas-kitchen",
+    "name": "Guy Fieri's Vegas Kitchen & Bar",
+    "hotel_casino": "The LINQ Hotel + Experience",
+    "cuisine": "American",
+    "price_level": 2,
+    "google_place_id": "PLACEHOLDER_guy_fieri_linq",
+    "booking_url": "https://www.caesars.com/linq/restaurants/guy-fieri-vegas-kitchen-and-bar",
+    "dino_take": "Look, I respect the hustle — triple-decker burgers and mac-and-cheese bites that hit the spot after midnight. No pretense, big portions, and you know exactly what you're getting into.",
+    "bookable": true
+  },
+  {
+    "venue_id": "nobu-caesars",
+    "name": "Nobu Restaurant",
+    "hotel_casino": "Caesars Palace",
+    "cuisine": "Japanese / Peruvian",
+    "price_level": 4,
+    "google_place_id": "PLACEHOLDER_nobu_caesars",
+    "booking_url": "https://noburestaurants.com/las-vegas/experience/",
+    "dino_take": "The black cod with miso is one of the most copied dishes in fine dining for a reason — because nobody does it like the original. The omakase menu here runs deep, and the sake program is serious.",
+    "bookable": true
+  },
+  {
+    "venue_id": "sparrow-wolf-downtown",
+    "name": "Sparrow + Wolf",
+    "hotel_casino": "Off-Strip (Spring Valley)",
+    "cuisine": "Modern American",
+    "price_level": 2,
+    "google_place_id": "PLACEHOLDER_sparrow_wolf",
+    "booking_url": "https://sparrowandwolflv.com/reservations/",
+    "dino_take": "The locals' secret — chef Brian Howard is cooking some of the most creative food in the city without charging Strip prices for it. The menu changes constantly and it's never less than excellent.",
+    "bookable": true
+  },
+  {
+    "venue_id": "lotus-india-palace",
+    "name": "Lotus of Siam",
+    "hotel_casino": "Off-Strip (Commercial Center)",
+    "cuisine": "Thai",
+    "price_level": 2,
+    "google_place_id": "PLACEHOLDER_lotus_of_siam",
+    "booking_url": "https://www.lotusofsiamlv.com/",
+    "dino_take": "Anthony Bourdain called it the best Thai food in America, and he wasn't wrong — the northern Thai dishes especially are in a class of their own. No hotel, no scene, just remarkable cooking.",
+    "bookable": false
+  },
+  {
+    "venue_id": "bardot-brasserie-aria",
+    "name": "Bardot Brasserie",
+    "hotel_casino": "ARIA Resort & Casino",
+    "cuisine": "French Brasserie",
+    "price_level": 3,
+    "google_place_id": "PLACEHOLDER_bardot_brasserie_aria",
+    "booking_url": "https://www.arialasvegas.com/restaurants/bardot-brasserie/",
+    "dino_take": "Michael Mina's French brasserie gets it right — moules frites, steak tartare, a proper croque monsieur. The weekend brunch is the most civilized two hours you'll spend in Vegas.",
+    "bookable": true
+  },
+  {
+    "venue_id": "yardbird-venetian",
+    "name": "Yardbird",
+    "hotel_casino": "The Venetian",
+    "cuisine": "Southern American",
+    "price_level": 2,
+    "google_place_id": "PLACEHOLDER_yardbird_venetian",
+    "booking_url": "https://www.venetianlasvegas.com/restaurants/yardbird.html",
+    "dino_take": "The fried chicken and watermelon and hot sauce and honey situation is one of the best bites on the Strip. Southern food done with genuine care — the biscuits alone are worth the visit.",
+    "bookable": true
+  },
+  {
+    "venue_id": "estiatorio-milos-cosmopolitan",
+    "name": "Estiatorio Milos",
+    "hotel_casino": "The Cosmopolitan of Las Vegas",
+    "cuisine": "Greek Seafood",
+    "price_level": 4,
+    "google_place_id": "PLACEHOLDER_estiatorio_milos_cosmo",
+    "booking_url": "https://www.cosmopolitanlasvegas.com/restaurants/estiatorio-milos",
+    "dino_take": "Pristine fish flown in daily from the Mediterranean — you pick it yourself from the display case, they grill it simply, and it's extraordinary. One of the genuinely special rooms on the Strip.",
+    "bookable": true
+  },
+  {
+    "venue_id": "allegro-wynn",
+    "name": "Allegro",
+    "hotel_casino": "Wynn Las Vegas",
+    "cuisine": "Italian",
+    "price_level": 3,
+    "google_place_id": "PLACEHOLDER_allegro_wynn",
+    "booking_url": "https://www.wynnlasvegas.com/dining/fine-dining/allegro",
+    "dino_take": "Wynn's Italian flagship is as handsome a room as you'll find in Vegas, and the housemade pastas are exceptional. The pappardelle with braised short rib is the dish I keep coming back to.",
+    "bookable": true
+  },
+  {
+    "venue_id": "the-black-sheep-downtown",
+    "name": "The Black Sheep",
+    "hotel_casino": "Off-Strip (Southwest Las Vegas)",
+    "cuisine": "Vietnamese / American Fusion",
+    "price_level": 2,
+    "google_place_id": "PLACEHOLDER_black_sheep_lv",
+    "booking_url": "https://www.theblacksheeplv.com/",
+    "dino_take": "Chef Jamie Tran is doing something genuinely original with Vietnamese flavors and American technique — the fried chicken bánh mì and lemongrass lamb chops are brilliant. A locals' favorite for good reason.",
+    "bookable": true
+  }
+]
