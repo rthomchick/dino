@@ -1,47 +1,117 @@
-Add goal field to journal schema, update layout, migrate existing entries
+# Dino — AI Vegas Dining Concierge
 
-Task 1: Extend the content schema
-In src/content.config.ts, add goal as an optional string field to the journal collection schema:
-typescriptgoal: z.string().optional(),  // One-sentence goal statement for the entry
-Add it after the summary field.
+A conversational AI dining concierge for Las Vegas. Named after Dean Martin, with Rat Pack-era charm. Dino recommends restaurants, checks availability, books tables, and adds reservations to Google Calendar with insider tips.
 
-Task 2: Update the journal entry layout
-In the journal entry layout file, render the goal field as an italic subtitle between the title and the ContentActions toolbar.
-Find the title/tags block. After the title <h1> and before the tags div, add:
-astro{goal && (
-  <p class="text-base italic text-stone-500 dark:text-stone-400 leading-relaxed mb-5 max-w-2xl">
-    Goal: {goal}
-  </p>
-)}
-The goal variable should come from the entry's frontmatter data, pulled the same way title, tags, and other frontmatter fields are accessed in the layout.
-Also: find and remove the <hr> that currently appears between the goal statement (first italic paragraph in prose) and the body content. This is typically rendered from a markdown --- that sits after the goal line in the entry body. Since the goal is now in the layout, this divider is no longer needed. The toolbar's borders provide the visual separation.
-Do NOT remove <hr> elements that appear elsewhere in the body (e.g., the closing divider before "Week N complete"). Only remove the one that immediately follows the goal statement at the top of the prose.
+**Live:** [web-production-c0565.up.railway.app](https://web-production-c0565.up.railway.app)
 
-Task 3: Migrate all 12 existing journal entries
-For each .md file in src/content/journal/:
+## What Dino does
 
-Open the file
-Find the goal statement in the body. It will be the first paragraph, formatted as either:
+Tell Dino what kind of night you're planning. He recommends restaurants with strong opinions, checks availability, books a table, and adds the reservation to your Google Calendar — complete with an insider tip about what to order or where to sit.
 
-*Goal: ...* (italic markdown)
-_Goal: ..._ (alternate italic markdown)
-The text always starts with "Goal:"
+Dino orchestrates six tools through a single-agent tool loop:
 
+| Tool | Source | Status |
+|------|--------|--------|
+| `search_restaurants` | Google Maps Places API | Real |
+| `get_restaurant_details` | Google Maps Places API | Real |
+| `check_availability` | Booking service | Mock |
+| `create_reservation` | Booking service | Mock |
+| `add_to_calendar` | Google Calendar deep links | Real |
+| `get_booking_link` | URL builder | Real |
 
-Extract the goal text (everything after "Goal: ", without the italic markers)
-Add goal: "extracted text" to the frontmatter. Escape any quotes in the text.
-Remove the goal line from the body content
-Remove the --- (horizontal rule) that immediately follows the goal line, if present. Do NOT remove other horizontal rules in the body.
-Save the file
+The booking service uses a mock implementation with a real API contract. The agent doesn't know it's a mock. Swapping in a real provider means changing the service, not the agent.
 
-Verify after migration: Run npx astro build and confirm zero errors. Spot-check 3 entries in the browser to confirm the goal renders as the italic subtitle, not as inline prose.
+## Architecture
 
-Validation steps:
+```
+Chat UI (HTML/CSS/JS) → FastAPI backend → Dino Agent (Claude Sonnet) → Tools
+```
 
-npm run dev — open Week 10 journal entry
-Confirm: goal appears as italic subtitle below title, above toolbar
-Confirm: goal is NOT repeated inside the prose body
-Confirm: no orphaned <hr> between toolbar and first body heading
-Open Week 1 and Week 13 — confirm same behavior
-Run npx astro build — zero errors across all 12 entries
-Check that entries without a goal statement (if any exist) render normally without the subtitle
+The backend is the product. The frontend is a thin client that calls `POST /chat`.
+
+## Project structure
+
+```
+dino/
+├── src/
+│   ├── agent/
+│   │   ├── dino.py              # Agent loop + tool orchestration
+│   │   ├── personality.py       # System prompt + Dino's voice
+│   │   └── tools.py             # Tool definitions
+│   ├── services/
+│   │   ├── places.py            # Google Maps Places API
+│   │   ├── booking.py           # Mock booking (real contract)
+│   │   └── calendar.py          # Google Calendar deep links
+│   ├── data/                    # Curated restaurant data
+│   └── api/
+│       ├── main.py              # FastAPI app
+│       └── models.py            # Pydantic response models
+├── frontend/
+│   └── index.html               # Chat UI (vanilla HTML/CSS/JS)
+├── tests/
+├── .claude/
+│   ├── commands/                # Claude Code slash commands
+│   └── skills/                  # Claude Code skill files
+├── CLAUDE.md                    # Claude Code project context
+├── Procfile                     # Railway start command
+├── requirements.txt
+└── .env.example
+```
+
+## Setup
+
+### Prerequisites
+
+- Python 3.12+
+- [Anthropic API key](https://console.anthropic.com/)
+- [Google Maps API key](https://console.cloud.google.com/) with Places API enabled
+
+### Install
+
+```bash
+git clone https://github.com/rthomchick/dino.git
+cd dino
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+### Configure
+
+Copy `.env.example` to `.env` and add your keys:
+
+```
+ANTHROPIC_API_KEY=sk-ant-...
+GOOGLE_MAPS_API_KEY=AIza...
+```
+
+### Run
+
+```bash
+uvicorn src.api.main:app --reload --port 8000
+```
+
+Open [http://localhost:8000](http://localhost:8000).
+
+## Deployment
+
+Deployed on [Railway](https://railway.com) (Hobby plan, $5/month). Railway auto-deploys from the `main` branch on push.
+
+Required environment variables in Railway:
+- `ANTHROPIC_API_KEY`
+- `GOOGLE_MAPS_API_KEY`
+
+## Tech stack
+
+- **Backend:** Python, FastAPI, httpx, Pydantic
+- **AI:** Anthropic API (Claude Sonnet)
+- **Discovery:** Google Maps Places API
+- **Calendar:** Google Calendar deep links
+- **Frontend:** Vanilla HTML, CSS, JavaScript
+- **Hosting:** Railway
+
+## Built by
+
+Richard Thomchick — [richardthomchick.com](https://richardthomchick.com)
+
+Built during Week 13 of an AI Product Development Program. Part of a portfolio of AI-powered tools built by a PM learning to ship AI products.
